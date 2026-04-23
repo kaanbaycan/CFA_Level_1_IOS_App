@@ -3,7 +3,53 @@ import Foundation
 struct FlashcardData {
     static let topics: [TopicArea] = [
         TopicArea(
+            name: "Ethical and Professional Standards",
+            weight: "15-20%",
+            modules: []
+        ),
+        TopicArea(
+            name: "Quantitative Methods",
+            weight: "6-9%",
+            modules: []
+        ),
+        TopicArea(
+            name: "Economics",
+            weight: "6-9%",
+            modules: []
+        ),
+        TopicArea(
+            name: "Financial Statement Analysis",
+            weight: "11-14%",
+            modules: []
+        ),
+        TopicArea(
+            name: "Corporate Issuers",
+            weight: "6-9%",
+            modules: []
+        ),
+        TopicArea(
+            name: "Equity Investments",
+            weight: "11-14%",
+            modules: []
+        ),
+        TopicArea(
+            name: "Fixed Income",
+            weight: "11-14%",
+            modules: []
+        ),
+        TopicArea(
+            name: "Derivatives",
+            weight: "5–8%",
+            modules: []
+        ),
+        TopicArea(
+            name: "Alternative Investments",
+            weight: "7-10%",
+            modules: []
+        ),
+        TopicArea(
             name: "Portfolio Management",
+            weight: "8-12%",
             modules: [
                 StudyModule(
                     name: "Module 5: Behavioral Biases",

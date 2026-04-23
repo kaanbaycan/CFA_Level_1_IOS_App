@@ -15,5 +15,6 @@ struct StudyModule: Identifiable, Hashable {
 struct TopicArea: Identifiable, Hashable {
     var id = UUID()
     let name: String
+    let weight: String
     let modules: [StudyModule]
 }

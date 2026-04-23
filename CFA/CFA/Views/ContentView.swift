@@ -8,8 +8,13 @@ struct ContentView: View {
                     HStack {
                         Image(systemName: "book.fill")
                             .foregroundColor(.blue)
-                        Text(topic.name)
-                            .font(.headline)
+                        VStack(alignment: .leading) {
+                            Text(topic.name)
+                                .font(.headline)
+                            Text("Weight: \(topic.weight)")
+                                .font(.caption)
+                                .foregroundColor(.secondary)
+                        }
                     }
                     .padding(.vertical, 8)
                 }
