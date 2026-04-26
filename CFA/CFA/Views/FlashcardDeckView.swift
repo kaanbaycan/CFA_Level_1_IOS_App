@@ -67,41 +67,94 @@ struct FlashcardDeckView: View {
                 
                 Spacer()
                 
-                // Card View
-                CardView(card: cards[currentIndex])
-                    .id(cards[currentIndex].id)
+                // Card View with Mastery Badge
+                VStack(spacing: 15) {
+                    let level = MasteryManager.shared.getLevel(for: cards[currentIndex].term)
+                    HStack {
+                        Spacer()
+                        Text(level >= 4 ? "MASTERED" : (level == 0 ? "NEW" : "LEARNING"))
+                            .font(.caption2)
+                            .fontWeight(.bold)
+                            .padding(.horizontal, 8)
+                            .padding(.vertical, 4)
+                            .background(level >= 4 ? Color.green : (level == 0 ? Color.blue : Color.orange))
+                            .foregroundColor(.white)
+                            .cornerRadius(8)
+                    }
+                    .padding(.horizontal, 40)
+                    
+                    CardView(card: cards[currentIndex])
+                        .id(cards[currentIndex].id)
+                }
                 
                 Spacer()
                 
+                // Mastery Feedback Buttons
+                HStack(spacing: 30) {
+                    Button(action: { markKnowledge(known: false) }) {
+                        VStack {
+                            Image(systemName: "xmark.circle.fill")
+                                .font(.system(size: 40))
+                                .foregroundColor(.red)
+                            Text("Don't Know")
+                                .font(.caption)
+                                .foregroundColor(.red)
+                        }
+                    }
+                    
+                    Button(action: { markKnowledge(known: true) }) {
+                        VStack {
+                            Image(systemName: "checkmark.circle.fill")
+                                .font(.system(size: 40))
+                                .foregroundColor(.green)
+                            Text("I Know It")
+                                .font(.caption)
+                                .foregroundColor(.green)
+                        }
+                    }
+                }
+                .padding(.bottom, 20)
+                
                 // Navigation Controls
-                HStack(spacing: 40) {
+                HStack(spacing: 60) {
                     Button(action: previousCard) {
-                        Image(systemName: "arrow.left.circle.fill")
-                            .font(.system(size: 50))
-                            .foregroundColor(currentIndex > 0 ? .blue : .gray)
+                        Image(systemName: "chevron.left")
+                            .font(.system(size: 24, weight: .bold))
                     }
                     .disabled(currentIndex == 0)
                     
                     Button(action: shuffleCards) {
-                        Image(systemName: "shuffle.circle.fill")
-                            .font(.system(size: 50))
-                            .foregroundColor(.orange)
+                        Image(systemName: "shuffle")
+                            .font(.system(size: 24, weight: .bold))
                     }
                     
                     Button(action: nextCard) {
-                        Image(systemName: "arrow.right.circle.fill")
-                            .font(.system(size: 50))
-                            .foregroundColor(.blue)
+                        Image(systemName: "chevron.right")
+                            .font(.system(size: 24, weight: .bold))
                     }
                 }
-                .padding(.bottom, 50)
+                .padding(.bottom, 30)
             }
         }
         .padding()
         .navigationTitle("Flashcards")
+        .onChange(of: module) { newModule in
+            cards = newModule.cards
+            currentIndex = 0
+            isCompleted = false
+        }
         #if os(iOS)
         .navigationBarTitleDisplayMode(.inline)
         #endif
+    }
+    
+    func markKnowledge(known: Bool) {
+        MasteryManager.shared.updateMastery(for: cards[currentIndex].term, increment: known)
+        #if os(iOS)
+        let generator = UINotificationFeedbackGenerator()
+        generator.notificationOccurred(known ? .success : .warning)
+        #endif
+        nextCard()
     }
     
     func nextCard() {

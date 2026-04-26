@@ -40,11 +40,11 @@ struct QuizView: View {
                     
                     // The Term
                     Text(questions[currentIndex].term)
-                        .font(.title)
+                        .font(questions[currentIndex].term.count > 50 ? .headline : .title)
                         .fontWeight(.bold)
-                        .multilineTextAlignment(.center)
-                        .padding(.vertical, 30)
-                        .frame(maxWidth: .infinity)
+                        .multilineTextAlignment(.leading)
+                        .padding()
+                        .frame(maxWidth: .infinity, minHeight: 150)
                         .background(Color.blue.opacity(0.1))
                         .cornerRadius(15)
                         .padding(.horizontal)
@@ -84,7 +84,12 @@ struct QuizView: View {
             }
         }
         .onAppear {
-            questions = module.generateQuiz()
+            if questions.isEmpty {
+                questions = module.generateQuiz()
+            }
+        }
+        .onChange(of: module) { newModule in
+            restartQuiz()
         }
         .navigationTitle("Practice Test")
         .navigationBarTitleDisplayMode(.inline)
@@ -93,7 +98,12 @@ struct QuizView: View {
     func selectOption(_ option: String) {
         if selectedOption == nil {
             selectedOption = option
-            if option == questions[currentIndex].correctDefinition {
+            let isCorrect = option == questions[currentIndex].correctDefinition
+            
+            // Update Mastery
+            MasteryManager.shared.updateMastery(for: questions[currentIndex].term, increment: isCorrect)
+            
+            if isCorrect {
                 score += 1
                 #if os(iOS)
                 hapticSuccess.notificationOccurred(.success)

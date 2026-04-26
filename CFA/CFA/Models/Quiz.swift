@@ -9,6 +9,16 @@ struct QuizQuestion: Identifiable {
 
 extension StudyModule {
     func generateQuiz() -> [QuizQuestion] {
+        if let manual = manualQuestions, !manual.isEmpty {
+            return manual.map { q in
+                QuizQuestion(
+                    term: q.question,
+                    correctDefinition: q.correctAnswer,
+                    options: q.options
+                )
+            }
+        }
+        
         var questions: [QuizQuestion] = []
         let allDefinitions = cards.map { $0.definition }
         
